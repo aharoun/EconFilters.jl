@@ -1,8 +1,14 @@
 
 # HP filter, Hodrick and Prescott, 1997, “Postwar U.S. Business Cycles: An Empirical Investigation.” Journal of Money, Credit, and Banking. Vol. 29, No. 1.
-function hp_filter(data::Array{T,1}, λ::Real) where T <: Real
+
+"""
+    hp_filter(y::Array{T,1}, λ::Real)
+    HP filter with parameter `λ`.
+
+"""
+function hp_filter(y::Array{T,1}, λ::Real) where T <: Real
     #naber
-    n = length(data)
+    n = length(y)
     n < 3 ? error("Sample size should be at least 3") : nothing
 
     if n == 3
@@ -17,17 +23,17 @@ function hp_filter(data::Array{T,1}, λ::Real) where T <: Real
         A  = spdiagm(-2 => d2, -1 => d1, 0 => d0, 1 => d1, 2 => d2)
     end
 
-    trend    = A\data
-    cyclical = data - trend
+    trend    = A\y
+    cyclical = y - trend
     
     return cyclical,trend
 end
 
 ##################################################################################
 # Optimal HP Filter Parameter (Dermoune et al. 2008), Theorem 1
-function optimalλDermoune(data)
+function optimalλDermoune(y)
     # Constructing the matrix P
-    n = length(data)
+    n = length(y)
     P = zeros(n-2,n)
     a = [1.0, -2.0, 1.0] 
     @inbounds for i in 1:n-2
@@ -35,12 +41,44 @@ function optimalλDermoune(data)
               end
 
     # The consistent estimator for λ
-    py      = P*data
+    py      = P*y
     num     = dot(py,py)
     denum   = dot(py[2:n-2],py[1:n-3])
 
     λopt = (-1/4)*(3/2 + ((n-3)*num)/((n-2)*denum)^-1)
   
 end
-##################################################################################
 
+##################################################################################
+# Pedersen 2001
+
+function optimalλPedersen(y,wH)
+    #w1      = pi/10    # cut off frequency based on average duration of business cycle
+
+    # Optimal λ minimizes the distortion
+    obj = x->distortion(y,wH,x[1])
+    result = optimize(obj, [16000.0], BFGS())
+    return result.minimizer[1]
+
+end
+
+function distortion(y,wH,λ)        
+    n      = length(y)
+
+    # normalized psd
+    xdft   = fft(y)
+    xdft   = xdft[1:Int(floor(n/2+1))]
+    F      = (1/(2*pi*n)) * abs2.(xdft)
+    F[2:end-1] = 2*F[2:end-1]
+    #w      = 0:(2*pi)/n:pi
+    w      = range(0.0,stop=pi,length=Int(floor(n/2+1)))
+
+    dw      = w[2] - w[1]
+    HIdeal  = zeros(length(w))
+    HIdeal[abs.(w) .> wH] .= 1.0
+    HHP     = @. abs2((4.0*λ*(1.0 - cos.(w))^2)/(4.0*λ*(1.0 - cos(w))^2 + 1.0))
+    Norm    = sum(2.0*F*dw)
+    v       = 2.0*F*dw/Norm
+
+    Q       = dot(abs.(HIdeal - HHP),v)
+end
