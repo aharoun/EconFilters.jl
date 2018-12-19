@@ -1,2 +1,6 @@
-* EconFilters.jl
+### EconFilters
+
+* HP filter
+* Baxter King filter
+* ...
 

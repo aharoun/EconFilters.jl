@@ -1,6 +1,5 @@
 using Revise
 using EconFilters
-using BenchmarkTools
 using Plots
 using CSV
 
@@ -9,15 +8,15 @@ data = CSV.read("example/GDPC1.csv")
 y = log.(data[:GDPC1])
 
 # HP with λ = 1600   
-t,c  = hpfilter(y,1600)
-
-# HP with optimal λ based on Dermoune et al (2008)
-λOpt       =  optimalλDermoune(y)
-tOpt,cOpt  = hpfilter(y,λOpt)
+c,t  = hpfilter(y,1600)
 
 # HP with optimal λ based on Pedersen (2001)
-λOpt2       =  optimalλPedersen(y,pi/10)  
-tOpt2,cOpt2 = hpfilter(y,λOpt2)
+λOpt      =  optimalλPedersen(y,pi/10)  
+cOpt,tOpt = hpfilter(y,λOpt)
 
-plot(data[:date],[c cOpt cOpt2],label=["1600","$λOpt","$λOpt2"],legend=:bottomright,xtickfont = font(5))
-plot(data[:date],[t tOpt tOpt2 y],label=["1600","$λOpt","$λOpt2","data"],legend=:bottomright,xtickfont = font(5))
+# BK Filter 
+# bkfilter(data,pL,pU,L) where pL and pU are lower and upper periods for bandpass filter, L is the order of the symmetric moving average
+cBK =  bkfilter(y,6,32,12)
+
+plot(data[:date],[c cOpt cBK],label=["Hp1600","Hp$λOpt","BK"],legend=:bottomright,xtickfont = font(5))
+

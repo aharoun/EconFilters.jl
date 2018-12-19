@@ -8,7 +8,7 @@ using Optim
 
 include("filters.jl")
 
-export hpfilter,optimalλDermoune,optimalλPedersen
+export hpfilter,optimalλDermoune,optimalλPedersen,bkfilter
 
 
 
