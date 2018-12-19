@@ -19,10 +19,5 @@ tOpt,cOpt  = hpfilter(y,λOpt)
 λOpt2       =  optimalλPedersen(y,pi/10)  
 tOpt2,cOpt2 = hpfilter(y,λOpt2)
 
-plot(data[:date],[c cOpt cOpt2],label=["1600","$λOpt","$λOpt2"],legend=:bottomright,xtickfont = font(6))
-plot(data[:date],[t tOpt tOpt2 y],label=["1600","$λOpt","$λOpt2","data"],legend=:bottomright,xtickfont = font(6))
-
-
-# todo; one sided filter
-# extended filter
-# BK filter
+plot(data[:date],[c cOpt cOpt2],label=["1600","$λOpt","$λOpt2"],legend=:bottomright,xtickfont = font(5))
+plot(data[:date],[t tOpt tOpt2 y],label=["1600","$λOpt","$λOpt2","data"],legend=:bottomright,xtickfont = font(5))

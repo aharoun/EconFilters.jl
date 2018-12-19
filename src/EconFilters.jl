@@ -6,10 +6,9 @@ using Optim
 
 
 
-include("hpfilter.jl")
-#include("baxterking_filter.jl")
+include("filters.jl")
 
-export hpfilter,optimalλDermoune,distortion,optimalλPedersen
+export hpfilter,optimalλDermoune,optimalλPedersen
 
 
 

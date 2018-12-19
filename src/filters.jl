@@ -1,5 +1,5 @@
 
-# HP filter, Hodrick and Prescott, 1997, “Postwar U.S. Business Cycles: An Empirical Investigation.” Journal of Money, Credit, and Banking. Vol. 29, No. 1.
+# Univariate HP filter, Hodrick and Prescott, 1997, “Postwar U.S. Business Cycles: An Empirical Investigation.” Journal of Money, Credit, and Banking. Vol. 29, No. 1.
 
 """
     hp_filter(y::Array{T,1}, λ::Real)
@@ -30,7 +30,6 @@ end
 
 ##################################################################################
 # Optimal HP Filter Parameter (Dermoune et al. 2008), Theorem 1
-# It assumes trend is random walk
 function optimalλDermoune(y)
     # Constructing the matrix P
     n = length(y)
@@ -75,7 +74,6 @@ function distortion(y,wH,λ)
     xdft   = xdft[1:Int(floor(n/2+1))]
     F      = (1/(2*pi*n)) * abs2.(xdft)
     F[2:end-1] = 2*F[2:end-1]
-    #w      = 0:(2*pi)/n:pi
     w      = range(0.0,stop=pi,length=Int(floor(n/2+1)))
 
     dw      = w[2] - w[1]
@@ -87,4 +85,5 @@ function distortion(y,wH,λ)
 
     Q       = dot(abs.(HIdeal - HHP),v)
 end
-##################################################################################
+####################################################################################################################################################################
+####################################################################################################################################################################
