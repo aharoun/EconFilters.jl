@@ -44,7 +44,7 @@ function optimalλDermoune(y)
     num   = dot(py,py)
     denum = dot(py[2:T-2],py[1:T-3])
     # The consistent estimator for λ          
-    λopt = (-1/4)/(3/2 + ((T-3)*num)/((T-2)*denum))
+    λopt = (-1/4)/(3/2 + ((T-3)*num)/((T-2)*denum))^-1
   
 end
 
@@ -53,7 +53,6 @@ end
 
 function optimalλPedersen(y,wH)
     #w1      = pi/10    # cut off frequency based on average duration of business cycle
-
     # Optimal λ minimizes the distortion
     obj = x->distortion(y,wH,x)
     result = optimize(obj, 1.0,10000.0) # seaching on [1.0,10_000.0], which should be ok.

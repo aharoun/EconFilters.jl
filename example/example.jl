@@ -4,7 +4,7 @@ using Plots
 using CSV
 
 # load US real GDP (quarterly)
-data = CSV.read("example/GDPC1.csv")
+data = CSV.read("GDPC1.csv")
 y = log.(data[:GDPC1])
 
 # HP with λ = 1600   
