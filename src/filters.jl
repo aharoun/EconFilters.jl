@@ -6,8 +6,8 @@
     HP filter with parameter `λ`.
 
 """
-function hpfilter(y::Array{Tp,1}, λ::Real) where Tp <: Real
-    T = length(y)
+function hpfilter(y::Array, λ::Real) 
+    T = size(y, 1)
     T < 3 ? error("Sample size should be at least 3") : nothing
 
     if T == 3
@@ -32,7 +32,7 @@ end
 # Optimal HP Filter Parameter (Dermoune et al. 2008), Theorem 1
 function optimalλDermoune(y)
     # Constructing the matrix P
-    T = length(y)
+    T = size(y, 1)
     # P = zeros(n-2,n)
     # a = [1.0, -2.0, 1.0] 
     # @inbounds for i in 1:n-2
@@ -40,7 +40,7 @@ function optimalλDermoune(y)
     #           end
 
     # py      = P*y
-    py    = diff(diff(y)) 
+    py    = diff(diff(y, dims=1), dims=1) 
     num   = dot(py,py)
     denum = dot(py[2:T-2],py[1:T-3])
     # The consistent estimator for λ          
@@ -66,7 +66,7 @@ function optimalλPedersen(y,wH)
 end
 
 function distortion(y,wH,λ)        
-    T      = length(y)
+    T      = size(y, 1)
 
     # normalized psd
     xdft   = fft(y)
