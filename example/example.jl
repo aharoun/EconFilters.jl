@@ -1,4 +1,3 @@
-using Revise
 using EconFilters
 using Plots
 using CSV
@@ -11,6 +10,7 @@ y = log.(data[:GDPC1])
 c,t  = hpfilter(y,1600)
 
 # HP with optimal λ based on Pedersen (2001)
+# pi/10 becase the data is quarterly
 λOpt      =  optimalλPedersen(y,pi/10)  
 cOpt,tOpt = hpfilter(y,λOpt)
 
@@ -25,7 +25,7 @@ cBK =  bkfilter(y,6,32,12)
 # ```add https://github.com/aharoun/SSM.jl```
 #
 using SSM
-model = arima(2,1,2)
+model = arima(2,1,1)
 modelEst, estParams , _ = estimate(model, y);
 
 fH = 10  # forecast horizon (period)
@@ -35,3 +35,4 @@ cExt, tExt = hpfilter([y;yF],1600)
 
 plot(data[:date],[c cExt[1:end-fH] cOpt cBK],label=["Hp1600","Hp1600 Extended","Hp$λOpt","BK"],legend=:bottomright,xtickfont = font(5))
 
+plot(data[:date],[c cExt[1:end-fH]],label=["Hp1600","Hp1600 Extended"],legend=:bottomright,xtickfont = font(5))
