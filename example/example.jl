@@ -22,7 +22,7 @@ cBK =  bkfilter(y,6,32,12)
 # To reduce end-of-sample bias of hp filter: Estimate an arima model, extend y series with forecasted values.
 # For this, use SSM package (unregistered).
 # First add the package
-# ```add https://github.com/aharoun/SSM.jl```
+# ```] add https://github.com/aharoun/SSM.jl```
 #
 using SSM
 model = arima(2,1,1)
