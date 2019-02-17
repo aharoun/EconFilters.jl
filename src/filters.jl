@@ -2,11 +2,11 @@
 # Univariate HP filter, Hodrick and Prescott, 1997, “Postwar U.S. Business Cycles: An Empirical Investigation.” Journal of Money, Credit, and Banking. Vol. 29, No. 1.
 
 """
-    hp_filter(y::Array{T,1}, λ::Real)
+    hp_filter(y::Array{Tp}, λ::Real) where Tp<:Real
     HP filter with parameter `λ`.
 
 """
-function hpfilter(y::Array, λ::Real) 
+function hpfilter(y::Array{Tp}, λ::Real)  where Tp<:Real
     T = size(y, 1)
     T < 3 ? error("Sample size should be at least 3") : nothing
 
@@ -33,14 +33,14 @@ end
 function optimalλDermoune(y)
     # Constructing the matrix P
     T = size(y, 1)
-    # P = zeros(n-2,n)
-    # a = [1.0, -2.0, 1.0] 
-    # @inbounds for i in 1:n-2
-    #             P[i,i:i+2] = a
-    #           end
+    P = zeros(T-2,T)
+    a = [1.0, -2.0, 1.0] 
+    @inbounds for i in 1:T-2
+                P[i,i:i+2] = a
+              end
 
-    # py      = P*y
-    py    = diff(diff(y, dims=1), dims=1) 
+    py      = P*y
+    # py    = diff(diff(y, dims=1), dims=1) 
     num   = dot(py,py)
     denum = dot(py[2:T-2],py[1:T-3])
     # The consistent estimator for λ          
