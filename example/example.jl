@@ -6,15 +6,15 @@ using CSV
 data = CSV.read("GDPC1.csv")
 y = log.(data[:GDPC1])
 
-# HP with λ = 1600   
+# HP with λ = 1600
 c,t  = hpfilter(y,1600)
 
 # HP with optimal λ based on Pedersen (2001)
 # pi/10 becase the data is quarterly
-λOpt      =  optimalλPedersen(y,pi/10)  
+λOpt      =  optimalλPedersen(y,pi/10)
 cOpt,tOpt = hpfilter(y,λOpt)
 
-# BK Filter 
+# BK Filter
 # bkfilter(data,pL,pU,L) where pL and pU are lower and upper periods for bandpass filter, L is the order of the symmetric moving average
 cBK =  bkfilter(y,6,32,12)
 
